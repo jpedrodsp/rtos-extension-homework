@@ -7,27 +7,27 @@
 
 #define TASK_DEFAULTWAITTIME pdMS_TO_TICKS(10)
 
-void task_getumidityvalues(void *pvParameters)
+void task_umiditysensor(void *pvParameters)
 {
-    ESP_LOGI("task_getumidityvalues", "Task started");
+    ESP_LOGI("task_umiditysensor", "Task started");
     while(1)
     {
         vTaskDelay(TASK_DEFAULTWAITTIME);
     }
 }
 
-void task_updatedisplay(void *pvParameters)
+void task_display(void *pvParameters)
 {
-    ESP_LOGI("task_updatedisplay", "Task started");
+    ESP_LOGI("task_display", "Task started");
     while(1)
     {
         vTaskDelay(TASK_DEFAULTWAITTIME);
     }
 }
 
-void task_controlhumidity(void *pvParameters)
+void task_umidityactuator(void *pvParameters)
 {
-    ESP_LOGI("task_controlhumidity", "Task started");
+    ESP_LOGI("task_umidityactuator", "Task started");
     while(1)
     {
         vTaskDelay(TASK_DEFAULTWAITTIME);
@@ -42,7 +42,7 @@ void init_hw(void)
 void app_main(void)
 {
     init_hw();
-    xTaskCreate(task_getumidityvalues, "task_getumidityvalues", 2048, NULL, 1, NULL);
-    xTaskCreate(task_updatedisplay, "task_updatedisplay", 2048, NULL, 1, NULL);
-    xTaskCreate(task_controlhumidity, "task_controlhumidity", 2048, NULL, 1, NULL);
+    xTaskCreate(task_umiditysensor, "umiditysensor", 2048, NULL, 1, NULL);
+    xTaskCreate(task_display, "display", 2048, NULL, 1, NULL);
+    xTaskCreate(task_umidityactuator, "umidityactuator", 2048, NULL, 1, NULL);
 }

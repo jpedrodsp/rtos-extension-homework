@@ -1,0 +1,2 @@
+#pragma once
+#define TASK_DEFAULTWAITTIME pdMS_TO_TICKS(10)
