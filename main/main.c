@@ -14,7 +14,7 @@ void init_hw(void)
 {
     // Configure PINs/Connections for DHT22
     {
-
+        // Not needed if using DHT Library
     }
     // Configure PINs/Connections for Display
     {
