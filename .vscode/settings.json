@@ -13,5 +13,10 @@
     "idf.portWin": "COM8",
     "idf.pythonBinPathWin": "C:\\Users\\jp_99\\.espressif\\python_env\\idf4.3_py3.11_env\\Scripts\\python.exe",
     "idf.toolsPathWin": "C:\\Users\\jp_99\\.espressif",
-    "idf.flashType": "UART"
+    "idf.flashType": "UART",
+    "files.associations": {
+        "defaults.h": "c",
+        "sensor.h": "c",
+        "actuator.h": "c"
+    }
 }
