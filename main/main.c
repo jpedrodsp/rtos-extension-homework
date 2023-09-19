@@ -36,12 +36,15 @@ void app_main(void)
 {
     inithw_t config = init_hw();
     // Create Umidity Sensor Task
-    xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, NULL, 1, NULL);
+    TaskHandle_t hndUmiditySensorTask;
+    xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, NULL, 1, &hndUmiditySensorTask);
     // Create Display Task
+    TaskHandle_t hndDisplayTask;
     display_pvparameters_t display_pvparameters = {
         .dev = config.hndDisplayDevice
     };
-    xTaskCreate(task_display, TASK_DISPLAY_NAME, TASK_DISPLAY_STACKSIZE, &display_pvparameters, 1, NULL);
+    xTaskCreate(task_display, TASK_DISPLAY_NAME, TASK_DISPLAY_STACKSIZE, &display_pvparameters, 1, &hndDisplayTask);
     // Create Umidity Actuator Task
-    xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, NULL, 1, NULL);
+    TaskHandle_t hndUmidityActuatorTask;
+    xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, NULL, 1, &hndUmidityActuatorTask);
 }
