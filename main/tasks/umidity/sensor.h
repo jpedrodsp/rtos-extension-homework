@@ -1,3 +1,5 @@
+#pragma once
+
 #include "defaults.h"
 
 #include "freertos/task.h"
@@ -29,9 +31,9 @@ void task_umiditysensor(void *pvParameters)
             // TODO: Implement error handling
             ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error reading data from DHT22");
         } else {
-            ESP_LOGD(TASK_UMIDITYSENSOR_NAME, "Umidity: %d%%, Temperature: %d°C", actual_umidity / 10, actual_temperature / 10);
+            ESP_LOGW(TASK_UMIDITYSENSOR_NAME, "Umidity: %d%%, Temperature: %d°C", actual_umidity / 10, actual_temperature / 10);
             // TODO: Implement data handling
-            ESP_LOGW(TASK_UMIDITYSENSOR_NAME, "Data handling not implemented");
+            //ESP_LOGW(TASK_UMIDITYSENSOR_NAME, "Data handling not implemented");
         }
         vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }

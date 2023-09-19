@@ -1,3 +1,5 @@
+#pragma once
+
 #include "defaults.h"
 
 #include "freertos/task.h"
