@@ -54,6 +54,6 @@ void task_display(void *pvParameters)
     ESP_LOGI(TASK_DISPLAY_NAME, "Task started");
     while (1)
     {
-        vTaskDelay(TASK_DEFAULTWAITTIME);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
 }

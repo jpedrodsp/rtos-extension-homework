@@ -14,7 +14,7 @@ void task_umidityactuator(void *pvParameters)
     while(1)
     {
         // TODO: Value is received from a queue. Implement it.
-        ESP_LOGW(TASK_UMIDITYACTUATOR_NAME, "Value is received from a queue. It is not implemented yet");
-        vTaskDelay(TASK_DEFAULTWAITTIME);
+        // ESP_LOGW(TASK_UMIDITYACTUATOR_NAME, "Value is received from a queue. It is not implemented yet");
+        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
 }

@@ -35,15 +35,30 @@ inithw_t init_hw(void)
 void app_main(void)
 {
     inithw_t config = init_hw();
+    
     // Create Umidity Sensor Task
+    #ifdef TASK_UMIDITYSENSOR_ENABLE
+    #if TASK_UMIDITYSENSOR_ENABLE == 1
     TaskHandle_t hndUmiditySensorTask;
-    // xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, NULL, 1, &hndUmiditySensorTask);
-    //  Create Display Task
+    xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, NULL, 1, &hndUmiditySensorTask);
+    #endif
+    #endif
+    
+    // Create Display Task
+    #ifdef TASK_DISPLAY_ENABLE
+    #if TASK_DISPLAY_ENABLE == 1
     TaskHandle_t hndDisplayTask;
     display_pvparameters_t display_pvparameters = {
         .dev = config.hndDisplayDevice};
     xTaskCreate(task_display, TASK_DISPLAY_NAME, TASK_DISPLAY_STACKSIZE, &display_pvparameters, 1, &hndDisplayTask);
+    #endif
+    #endif
+
     // Create Umidity Actuator Task
-    // TaskHandle_t hndUmidityActuatorTask;
-    // xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, NULL, 1, &hndUmidityActuatorTask);
+    #ifdef TASK_UMIDITYACTUATOR_ENABLE
+    #if TASK_UMIDITYACTUATOR_ENABLE == 1
+    TaskHandle_t hndUmidityActuatorTask;
+    xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, NULL, 1, &hndUmidityActuatorTask);
+    #endif
+    #endif
 }

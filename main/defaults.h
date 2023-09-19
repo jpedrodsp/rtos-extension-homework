@@ -1,3 +1,7 @@
 #pragma once
 #include "freertos/FreeRTOS.h"
 #define TASK_DEFAULTWAITTIME pdMS_TO_TICKS(10)
+
+#define TASK_UMIDITYSENSOR_ENABLE 1
+#define TASK_UMIDITYACTUATOR_ENABLE 0
+#define TASK_DISPLAY_ENABLE 1

@@ -33,6 +33,6 @@ void task_umiditysensor(void *pvParameters)
             // TODO: Implement data handling
             ESP_LOGW(TASK_UMIDITYSENSOR_NAME, "Data handling not implemented");
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
 }
