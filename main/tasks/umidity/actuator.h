@@ -9,8 +9,9 @@
 #include "esp_log.h"
 
 #define TASK_UMIDITYACTUATOR_NAME "umidityactuator"
-#define TASK_UMIDITYACTUATOR_STACKSIZE 2048
+#define TASK_UMIDITYACTUATOR_STACKSIZE 4096
 #define TASK_UMIDITYACTUATOR_OUT_PIN 24
+#define TASK_UMIDITYACTUATOR_QUEUE_WAITITME pdMS_TO_TICKS(100)
 
 typedef struct umidityactuator_pvparameters_s
 {
@@ -20,12 +21,21 @@ typedef struct umidityactuator_pvparameters_s
 void task_umidityactuator(void *pvParameters)
 {
     QueueHandle_t hndUmiditySensorQueue = ((umidityactuator_pvparameters_t *)pvParameters)->hndUmiditySensorQueue;
-    umidityqueue_data_t data;
+    umidityqueue_data_t data = {
+        .umidity = 0,
+        .temperature = 0
+    };
+    if (hndUmiditySensorQueue == NULL)
+    {
+        ESP_LOGE(TASK_UMIDITYACTUATOR_NAME, "Error receiving queue from pvParameters");
+        return;
+    }
 
     ESP_LOGI(TASK_UMIDITYACTUATOR_NAME, "Task started");
     while(1)
     {
-        if (xQueueReceive(hndUmiditySensorQueue, &data, TASK_DEFAULTWAITTIME * 100) != pdTRUE)
+        // Receive data from queue
+        if (xQueueReceive(hndUmiditySensorQueue, &data, TASK_UMIDITYACTUATOR_QUEUE_WAITITME) != pdTRUE)
         {
             ESP_LOGE(TASK_UMIDITYACTUATOR_NAME, "Error receiving data from queue: is queue empty? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(hndUmiditySensorQueue), uxQueueMessagesWaiting(hndUmiditySensorQueue));
         }

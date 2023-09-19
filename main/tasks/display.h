@@ -10,7 +10,7 @@
 #include "esp_log.h"
 
 #define TASK_DISPLAY_NAME "display"
-#define TASK_DISPLAY_STACKSIZE 2048
+#define TASK_DISPLAY_STACKSIZE 4096
 // #define TASK_DISPLAY_I2CPORT I2C_NUM_1 // defined in gpio.h
 
 #define I2C_MASTER_SCL_IO 22      /*!< gpio number for I2C master clock */

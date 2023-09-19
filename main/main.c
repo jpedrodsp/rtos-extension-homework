@@ -19,7 +19,9 @@ typedef struct inithw_s
 
 inithw_t init_hw(void)
 {
-    inithw_t inithw;
+    inithw_t inithw = {
+        .hndDisplayDevice = NULL
+    };
     // Configure PINs/Connections for DHT22
     {
         // Not needed if using DHT Library
@@ -41,15 +43,18 @@ inithw_t init_hw(void)
 void app_main(void)
 {
     inithw_t config = init_hw();
+    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umidityqueue_data_t));
+    xQueueReset(hndUmiditySensorQueue);
+    if (hndUmiditySensorQueue == NULL) {
+        ESP_LOGE("main", "Error creating queue for Umidity Sensor");
+    }
+    printf("got address for queue [1]: %p\n", hndUmiditySensorQueue);
+    printf("got address for queue [2]: %p\n", &hndUmiditySensorQueue);
 
     // Create Umidity Sensor Task
     #ifdef TASK_UMIDITYSENSOR_ENABLE
     #if TASK_UMIDITYSENSOR_ENABLE == 1
     // Create queue to receive data from Umidity Sensor
-    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umidityqueue_data_t));
-    if (hndUmiditySensorQueue == NULL) {
-        ESP_LOGE("main", "Error creating queue for Umidity Sensor");
-    }
     umiditysensor_pvparameters_t umiditysensor_pvparameters = {
         .hndUmiditySensorQueue = hndUmiditySensorQueue
     };
@@ -71,11 +76,17 @@ void app_main(void)
     // Create Umidity Actuator Task
     #ifdef TASK_UMIDITYACTUATOR_ENABLE
     #if TASK_UMIDITYACTUATOR_ENABLE == 1
-    TaskHandle_t hndUmidityActuatorTask;
     umidityactuator_pvparameters_t umidityactuator_pvparameters = {
         .hndUmiditySensorQueue = hndUmiditySensorQueue
     };
+    TaskHandle_t hndUmidityActuatorTask;
     xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, &umidityactuator_pvparameters, 1, &hndUmidityActuatorTask);
     #endif
     #endif
+
+    while(1)
+    {
+        // This is done to prevent the main task from exiting, and thus deleting the variables declared in this function (scope)
+        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
+    }
 }
