@@ -1,6 +1,7 @@
 #pragma once
 
 #include "defaults.h"
+#include "queues/umidity.h"
 
 #include "freertos/task.h"
 #include "freertos/queue.h"
@@ -14,12 +15,6 @@
 #define TASK_UMIDITYSENSOR_DHT_IN_PIN 23
 #define TASK_UMIDITYSENSOR_DHT_TYPE DHT_TYPE_AM2301 // This type is used for DHT22
 #define TASK_UMIDITYSENSOR_QUEUE_WAITITME pdMS_TO_TICKS(100)
-
-typedef struct umiditysensor_data_s
-{
-    int16_t umidity;
-    int16_t temperature;
-} umiditysensor_data_t;
 
 typedef struct umiditysensor_pvparameters_s
 {
@@ -49,7 +44,7 @@ void task_umiditysensor(void *pvParameters)
         else
         {
             // Send data to queue
-            umiditysensor_data_t data = {
+            umidityqueue_data_t data = {
                 .umidity = actual_umidity,
                 .temperature = actual_temperature};
             if (xQueueSend(hndUmiditySensorQueue, &data, TASK_UMIDITYSENSOR_QUEUE_WAITITME) != pdTRUE)

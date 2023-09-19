@@ -7,6 +7,7 @@
 #include "tasks/umidity/sensor.h"
 #include "tasks/umidity/actuator.h"
 #include "tasks/display.h"
+#include "queues/umidity.h"
 #include "defaults.h"
 
 #include "esp_log.h"
@@ -25,7 +26,11 @@ inithw_t init_hw(void)
     }
     // Configure PINs/Connections for Display
     {
+        #ifdef TASK_DISPLAY_ENABLE
+        #if TASK_DISPLAY_ENABLE == 1
         inithw.hndDisplayDevice = setup_display();
+        #endif
+        #endif
     }
     // Configure PINs/Connections for Actuator
     {
@@ -41,7 +46,7 @@ void app_main(void)
     #ifdef TASK_UMIDITYSENSOR_ENABLE
     #if TASK_UMIDITYSENSOR_ENABLE == 1
     // Create queue to receive data from Umidity Sensor
-    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umiditysensor_data_t));
+    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umidityqueue_data_t));
     if (hndUmiditySensorQueue == NULL) {
         ESP_LOGE("main", "Error creating queue for Umidity Sensor");
     }
@@ -67,7 +72,10 @@ void app_main(void)
     #ifdef TASK_UMIDITYACTUATOR_ENABLE
     #if TASK_UMIDITYACTUATOR_ENABLE == 1
     TaskHandle_t hndUmidityActuatorTask;
-    xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, NULL, 1, &hndUmidityActuatorTask);
+    umidityactuator_pvparameters_t umidityactuator_pvparameters = {
+        .hndUmiditySensorQueue = hndUmiditySensorQueue
+    };
+    xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, &umidityactuator_pvparameters, 1, &hndUmidityActuatorTask);
     #endif
     #endif
 }
