@@ -1,8 +1,10 @@
 #pragma once
 
+#include "queues/umidity.h"
 #include "defaults.h"
 
 #include "freertos/task.h"
+#include "freertos/queue.h"
 #include "driver/gpio.h"
 
 #include "ssd1306.h"
@@ -21,6 +23,7 @@
 typedef struct display_pvparameters_s
 {
     ssd1306_handle_t dev;
+    QueueHandle_t hndUmiditySensorQueue;
 } display_pvparameters_t;
 
 ssd1306_handle_t setup_display(void)
@@ -63,11 +66,41 @@ ssd1306_handle_t setup_display(void)
 
 void task_display(void *pvParameters)
 {
-    ssd1306_handle_t dev = ((display_pvparameters_t *)pvParameters)->dev;
-    // QueueHandle_t hndDisplayQueue = ((display_pvparameters_t *)pvParameters)->hndDisplayQueue;
+    display_pvparameters_t display_pvparameters = {
+        .dev = NULL,
+        .hndUmiditySensorQueue = NULL
+    };
+    display_pvparameters.dev = ((display_pvparameters_t *)pvParameters)->dev;
+    display_pvparameters.hndUmiditySensorQueue = ((display_pvparameters_t *)pvParameters)->hndUmiditySensorQueue;
+    if (display_pvparameters.dev == NULL)
+    {
+        ESP_LOGE(TASK_DISPLAY_NAME, "Error receiving display device from pvParameters");
+        return;
+    }
+    if (display_pvparameters.hndUmiditySensorQueue == NULL)
+    {
+        ESP_LOGE(TASK_DISPLAY_NAME, "Error receiving queue from pvParameters");
+        return;
+    }
+
+    umidityqueue_data_t data = {
+        .umidity = 0,
+        .temperature = 0
+    };
+
     ESP_LOGI(TASK_DISPLAY_NAME, "Task started");
     while (1)
     {
+        // Receive data from queue
+        if (xQueueReceive(display_pvparameters.hndUmiditySensorQueue, &data, TASK_DEFAULTWAITTIME) != pdTRUE)
+        {
+            ESP_LOGE(TASK_DISPLAY_NAME, "Error receiving data from queue: is queue empty? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(display_pvparameters.hndUmiditySensorQueue), uxQueueMessagesWaiting(display_pvparameters.hndUmiditySensorQueue));
+        }
+        else
+        {
+            // Now you can use the data to update the display (data.umidity and data.temperature). We are using it to log the data to the console.
+            ESP_LOGI(TASK_DISPLAY_NAME, "Data received from queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
+        }
         vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
 }

@@ -67,7 +67,9 @@ void app_main(void)
 #if TASK_DISPLAY_ENABLE == 1
     TaskHandle_t hndDisplayTask;
     display_pvparameters_t display_pvparameters = {
-        .dev = config.hndDisplayDevice};
+        .dev = config.hndDisplayDevice,
+        .hndUmiditySensorQueue = hndUmiditySensorQueue
+    };
     xTaskCreate(task_display, TASK_DISPLAY_NAME, TASK_DISPLAY_STACKSIZE, &display_pvparameters, 1, &hndDisplayTask);
 #endif
 #endif
