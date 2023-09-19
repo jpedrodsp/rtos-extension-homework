@@ -2,6 +2,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 
 #include "tasks/umidity/sensor.h"
 #include "tasks/umidity/actuator.h"
@@ -35,12 +36,20 @@ inithw_t init_hw(void)
 void app_main(void)
 {
     inithw_t config = init_hw();
-    
+
     // Create Umidity Sensor Task
     #ifdef TASK_UMIDITYSENSOR_ENABLE
     #if TASK_UMIDITYSENSOR_ENABLE == 1
+    // Create queue to receive data from Umidity Sensor
+    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umiditysensor_data_t));
+    if (hndUmiditySensorQueue == NULL) {
+        ESP_LOGE("main", "Error creating queue for Umidity Sensor");
+    }
+    umiditysensor_pvparameters_t umiditysensor_pvparameters = {
+        .hndUmiditySensorQueue = hndUmiditySensorQueue
+    };
     TaskHandle_t hndUmiditySensorTask;
-    xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, NULL, 1, &hndUmiditySensorTask);
+    xTaskCreate(task_umiditysensor, TASK_UMIDITYSENSOR_NAME, TASK_UMIDITYSENSOR_STACKSIZE, &umiditysensor_pvparameters, 1, &hndUmiditySensorTask);
     #endif
     #endif
     
