@@ -44,8 +44,16 @@ void task_umiditysensor(void *pvParameters)
             // TODO: Implement error handling
             ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error reading data from DHT22");
         } else {
-            ESP_LOGW(TASK_UMIDITYSENSOR_NAME, "Umidity: %d%%, Temperature: %d°C", actual_umidity / 10, actual_temperature / 10);
             // Send data to queue
+            umiditysensor_data_t data = {
+                .umidity = actual_umidity,
+                .temperature = actual_temperature
+            };
+            if (xQueueSend(hndUmiditySensorQueue, &data, 0) != pdTRUE) {
+                ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error sending data to queue");
+            } else {
+                ESP_LOGI(TASK_UMIDITYSENSOR_NAME, "Data sent to queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
+            }
         }
         vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
