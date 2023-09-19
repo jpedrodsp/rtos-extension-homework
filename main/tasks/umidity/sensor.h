@@ -13,6 +13,7 @@
 #define TASK_UMIDITYSENSOR_STACKSIZE 2048
 #define TASK_UMIDITYSENSOR_DHT_IN_PIN 23
 #define TASK_UMIDITYSENSOR_DHT_TYPE DHT_TYPE_AM2301 // This type is used for DHT22
+#define TASK_UMIDITYSENSOR_QUEUE_WAITITME pdMS_TO_TICKS(100)
 
 typedef struct umiditysensor_data_s
 {
@@ -51,10 +52,9 @@ void task_umiditysensor(void *pvParameters)
             umiditysensor_data_t data = {
                 .umidity = actual_umidity,
                 .temperature = actual_temperature};
-            if (xQueueSend(hndUmiditySensorQueue, &data, pdMS_TO_TICKS(100)) != pdTRUE)
+            if (xQueueSend(hndUmiditySensorQueue, &data, TASK_UMIDITYSENSOR_QUEUE_WAITITME) != pdTRUE)
             {
-                ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error sending data to queue");
-                ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Queu Stack %d/%d", uxQueueSpacesAvailable(hndUmiditySensorQueue), uxQueueMessagesWaiting(hndUmiditySensorQueue));
+                ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error sending data to queue: is queue full? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(hndUmiditySensorQueue), uxQueueMessagesWaiting(hndUmiditySensorQueue));
             }
             else
             {
