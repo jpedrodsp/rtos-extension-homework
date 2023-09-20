@@ -23,10 +23,11 @@
 #include <lwip/api.h>
 #include <lwip/netdb.h>
 
+#include "queues/umidity.h"
 #include "freertos/queue.h"
 
-#define SSID "casa"
-#define PASSWORD "150298011091"
+#define SSID "SemInternet"
+#define PASSWORD "seminternet"
 #define ESP_MAXIMUM_RETRY 5
 
 #define TAGW "WifiServer"
@@ -35,11 +36,11 @@
 int wifi_connect_status = 0;
 int retry_num = 0;
 xQueueHandle hndUmiditySensorQueue;
-struct data
-{
-    int temperature;
-    int umidity;
-} data;
+
+umidityqueue_data_t data = {
+    .umidity = 0,
+    .temperature = 0
+};
 
 char html_page[] = "<!DOCTYPE HTML><html>\n"
                    "<head>\n"
