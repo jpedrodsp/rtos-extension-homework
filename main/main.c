@@ -8,6 +8,8 @@
 #include "tasks/umidity/actuator.h"
 #include "tasks/display.h"
 #include "queues/umidity.h"
+
+#include "library/wifi.h"
 #include "defaults.h"
 
 #include "esp_log.h"
@@ -41,6 +43,7 @@ inithw_t init_hw(void)
 
 void app_main(void)
 {
+    wifi_setup();
     inithw_t config = init_hw();
     QueueHandle_t hndUmiditySensorQueue = xQueueCreate(10, sizeof(umidityqueue_data_t));
     xQueueReset(hndUmiditySensorQueue);
