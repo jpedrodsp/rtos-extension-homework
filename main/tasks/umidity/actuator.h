@@ -57,6 +57,6 @@ void task_umidityactuator(void *pvParameters)
                 gpio_set_level(TASK_UMIDITYACTUATOR_OUT_PIN, 0);
             }
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME * 200);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 300);
     }
 }
