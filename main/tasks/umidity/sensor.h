@@ -14,7 +14,7 @@
 #define TASK_UMIDITYSENSOR_STACKSIZE 4096
 #define TASK_UMIDITYSENSOR_DHT_IN_PIN 23
 #define TASK_UMIDITYSENSOR_DHT_TYPE DHT_TYPE_AM2301 // This type is used for DHT22
-#define TASK_UMIDITYSENSOR_QUEUE_WAITITME pdMS_TO_TICKS(100)
+#define TASK_UMIDITYSENSOR_QUEUE_WAITITME 0
 
 typedef struct umiditysensor_pvparameters_s
 {
@@ -28,8 +28,7 @@ void task_umiditysensor(void *pvParameters)
     QueueHandle_t hndUmiditySensorQueue = ((umiditysensor_pvparameters_t *)pvParameters)->hndUmiditySensorQueue;
     umidityqueue_data_t data = {
         .umidity = 0,
-        .temperature = 0
-    };
+        .temperature = 0};
     if (hndUmiditySensorQueue == NULL)
     {
         ESP_LOGE(TASK_UMIDITYSENSOR_NAME, "Error receiving queue from pvParameters");
@@ -43,8 +42,7 @@ void task_umiditysensor(void *pvParameters)
             TASK_UMIDITYSENSOR_DHT_TYPE,
             TASK_UMIDITYSENSOR_DHT_IN_PIN,
             &data.umidity,
-            &data.temperature
-        );
+            &data.temperature);
         if (err != ESP_OK)
         {
             // TODO: Implement error handling
@@ -62,6 +60,6 @@ void task_umiditysensor(void *pvParameters)
                 // ESP_LOGI(TASK_UMIDITYSENSOR_NAME, "Data sent to queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
             }
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME * 25);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 20);
     }
 }

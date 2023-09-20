@@ -42,7 +42,7 @@ inithw_t init_hw(void)
 void app_main(void)
 {
     inithw_t config = init_hw();
-    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(2, sizeof(umidityqueue_data_t));
+    QueueHandle_t hndUmiditySensorQueue = xQueueCreate(10, sizeof(umidityqueue_data_t));
     xQueueReset(hndUmiditySensorQueue);
     if (hndUmiditySensorQueue == NULL)
     {
@@ -68,8 +68,7 @@ void app_main(void)
     TaskHandle_t hndDisplayTask;
     display_pvparameters_t display_pvparameters = {
         .dev = config.hndDisplayDevice,
-        .hndUmiditySensorQueue = hndUmiditySensorQueue
-    };
+        .hndUmiditySensorQueue = hndUmiditySensorQueue};
     xTaskCreate(task_display, TASK_DISPLAY_NAME, TASK_DISPLAY_STACKSIZE, &display_pvparameters, 1, &hndDisplayTask);
 #endif
 #endif
