@@ -45,10 +45,10 @@ inithw_t init_hw(void)
 
 void app_main(void)
 {
-    wifi_setup();
     inithw_t config = init_hw();
     QueueHandle_t hndUmiditySensorQueue = xQueueCreate(10, sizeof(umidityqueue_data_t));
     xQueueReset(hndUmiditySensorQueue);
+    server_main(hndUmiditySensorQueue);
     if (hndUmiditySensorQueue == NULL)
     {
         ESP_LOGE("main", "Error creating queue for Umidity Sensor");
@@ -101,15 +101,15 @@ void app_main(void)
 #endif
 #endif
 
-// Create Webserver Task
-#ifdef TASK_WEBSERVER_ENABLE
-#if TASK_WEBSERVER_ENABLE == 1
-    TaskHandle_t hndWebserverTask;
-    webserver_pvparameters_t webserver_pvparameters = {
-        .dummy = 0};
-    xTaskCreate(task_webserver, TASK_WEBSERVER_NAME, TASK_WEBSERVER_STACKSIZE, &webserver_pvparameters, 1, &hndWebserverTask);
-#endif
-#endif
+    // Create Webserver Task
+    // #ifdef TASK_WEBSERVER_ENABLE
+    // #if TASK_WEBSERVER_ENABLE == 1
+    //   TaskHandle_t hndWebserverTask;
+    //   webserver_pvparameters_t webserver_pvparameters = {
+    //       .dummy = 0};
+    //  xTaskCreate(task_webserver, TASK_WEBSERVER_NAME, TASK_WEBSERVER_STACKSIZE, &webserver_pvparameters, 1, &hndWebserverTask);
+    // #endif
+    // #endif
 
     while (1)
     {
