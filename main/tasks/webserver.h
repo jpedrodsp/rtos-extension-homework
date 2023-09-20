@@ -66,7 +66,9 @@ char html_page[] = "<!DOCTYPE HTML><html>\n"
 
 void readings()
 {
-    if (xQueueReceive(hndUmiditySensorQueue, &data, 0) == pdTRUE)
+    data.temperature = 0;
+    data.umidity = 0;
+    if (xQueueReceive(hndUmiditySensorQueue, &data, portMAX_DELAY) == pdTRUE)
     {
         ESP_LOGI(TAGW, "Data received from queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
     }
@@ -74,7 +76,7 @@ void readings()
     {
         ESP_LOGW(TAGW, "Error receiving data from queue: is queue empty? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(hndUmiditySensorQueue), uxQueueMessagesWaiting(hndUmiditySensorQueue));
     }
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(400));
 }
 
 static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
