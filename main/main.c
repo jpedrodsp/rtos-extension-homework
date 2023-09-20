@@ -7,6 +7,7 @@
 #include "tasks/umidity/sensor.h"
 #include "tasks/umidity/actuator.h"
 #include "tasks/display.h"
+#include "tasks/monitor.h"
 #include "queues/umidity.h"
 
 #include "library/wifi.h"
@@ -83,6 +84,19 @@ void app_main(void)
         .hndUmiditySensorQueue = hndUmiditySensorQueue};
     TaskHandle_t hndUmidityActuatorTask;
     xTaskCreate(task_umidityactuator, TASK_UMIDITYACTUATOR_NAME, TASK_UMIDITYACTUATOR_STACKSIZE, &umidityactuator_pvparameters, 1, &hndUmidityActuatorTask);
+#endif
+#endif
+
+// Create Monitor Task
+#ifdef TASK_MONITOR_ENABLE
+#if TASK_MONITOR_ENABLE == 1
+    TaskHandle_t hndMonitorTask;
+    monitor_pvparameters_t monitor_pvparameters = {
+        .hndUmiditySensor = hndUmiditySensorTask,
+        .hndUmidityActuator = hndUmidityActuatorTask,
+        .hndDisplay = hndDisplayTask,
+        .hndMonitor = hndMonitorTask};
+    xTaskCreate(task_monitor, TASK_MONITOR_NAME, TASK_MONITOR_STACKSIZE, &monitor_pvparameters, 1, &hndMonitorTask);
 #endif
 #endif
 
