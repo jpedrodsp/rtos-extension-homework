@@ -94,6 +94,7 @@ void task_display(void *pvParameters)
         // Receive data from queue
         if (xQueueReceive(display_pvparameters.hndUmiditySensorQueue, &data, TASK_DEFAULTWAITTIME) == pdTRUE)
         {
+            // Now you can use the data to update the display (data.umidity and data.temperature). We are using it to log the data to the console.
             ESP_LOGI(TASK_DISPLAY_NAME, "Data received from queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
             char umid[10];
             char temp[10];
@@ -110,7 +111,7 @@ void task_display(void *pvParameters)
         }
         else
         {
-            // Now you can use the data to update the display (data.umidity and data.temperature). We are using it to log the data to the console.
+            // Called when it is not possible to receive data from the queue
             ESP_LOGW(TASK_DISPLAY_NAME, "Error receiving data from queue: is queue empty? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(display_pvparameters.hndUmiditySensorQueue), uxQueueMessagesWaiting(display_pvparameters.hndUmiditySensorQueue));
         }
         vTaskDelay(TASK_DEFAULTWAITTIME * 50);
