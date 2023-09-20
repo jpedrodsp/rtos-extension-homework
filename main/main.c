@@ -8,6 +8,7 @@
 #include "tasks/umidity/actuator.h"
 #include "tasks/display.h"
 #include "tasks/monitor.h"
+#include "tasks/webserver.h"
 #include "queues/umidity.h"
 
 #include "library/wifi.h"
@@ -97,6 +98,16 @@ void app_main(void)
         .hndDisplay = hndDisplayTask,
         .hndMonitor = hndMonitorTask};
     xTaskCreate(task_monitor, TASK_MONITOR_NAME, TASK_MONITOR_STACKSIZE, &monitor_pvparameters, 1, &hndMonitorTask);
+#endif
+#endif
+
+// Create Webserver Task
+#ifdef TASK_WEBSERVER_ENABLE
+#if TASK_WEBSERVER_ENABLE == 1
+    TaskHandle_t hndWebserverTask;
+    webserver_pvparameters_t webserver_pvparameters = {
+        .dummy = 0};
+    xTaskCreate(task_webserver, TASK_WEBSERVER_NAME, TASK_WEBSERVER_STACKSIZE, &webserver_pvparameters, 1, &hndWebserverTask);
 #endif
 #endif
 
