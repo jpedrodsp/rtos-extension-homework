@@ -92,7 +92,7 @@ void task_display(void *pvParameters)
     while (1)
     {
         // Receive data from queue
-        if (xQueueReceive(display_pvparameters.hndUmiditySensorQueue, &data, TASK_DEFAULTWAITTIME) != pdTRUE)
+        if (xQueueReceive(display_pvparameters.hndUmiditySensorQueue, &data, TASK_DEFAULTWAITTIME) == pdTRUE)
         {
             ESP_LOGI(TASK_DISPLAY_NAME, "Data received from queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
             char umid[10];
