@@ -43,6 +43,6 @@ void task_umidityactuator(void *pvParameters)
         {
             ESP_LOGI(TASK_UMIDITYACTUATOR_NAME, "Data received from queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 200);
     }
 }

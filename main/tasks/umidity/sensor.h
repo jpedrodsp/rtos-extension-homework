@@ -57,9 +57,9 @@ void task_umiditysensor(void *pvParameters)
             }
             else
             {
-                // ESP_LOGI(TASK_UMIDITYSENSOR_NAME, "Data sent to queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
+                ESP_LOGI(TASK_UMIDITYSENSOR_NAME, "Data sent to queue: Umidity: %d%%, Temperature: %d°C", data.umidity / 10, data.temperature / 10);
             }
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME * 20);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 100);
     }
 }

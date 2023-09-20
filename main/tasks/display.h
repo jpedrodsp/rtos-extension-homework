@@ -114,6 +114,6 @@ void task_display(void *pvParameters)
             // Called when it is not possible to receive data from the queue
             ESP_LOGW(TASK_DISPLAY_NAME, "Error receiving data from queue: is queue empty? AVAILABLE/WAITING: %d/%d", uxQueueSpacesAvailable(display_pvparameters.hndUmiditySensorQueue), uxQueueMessagesWaiting(display_pvparameters.hndUmiditySensorQueue));
         }
-        vTaskDelay(TASK_DEFAULTWAITTIME * 50);
+        vTaskDelay(TASK_DEFAULTWAITTIME * 200);
     }
 }
